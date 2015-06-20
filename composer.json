@@ -1,0 +1,33 @@
+{
+    "name": "arcanedev/generators",
+    "description": "Generators",
+    "license": "MIT",
+    "keywords": ["arcanesoft", "generators"],
+    "authors": [
+      {
+          "name": "ARCANEDEV",
+          "email": "arcanedev.maroc@gmail.com"
+      }
+    ],
+    "require": {
+        "php": ">=5.5.9",
+        "arcanedev/support": "~1.0",
+        "doctrine/dbal": "~2.5"
+    },
+    "require-dev": {
+        "orchestra/testbench": "~3.1",
+        "phpunit/phpunit": "~4.7",
+        "phpunit/phpcov": "~2.0",
+        "mockery/mockery": "~0.9"
+    },
+    "autoload": {
+        "psr-4": {
+            "Arcanedev\\Generators\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Arcanedev\\Generators\\Tests\\": "tests/"
+        }
+    }
+}
