@@ -6,6 +6,10 @@ use Arcanedev\Generators\Migrations\SchemaParser;
 /**
  * Class RequestGenerator
  * @package Arcanedev\Generators\Generators
+ *
+ * @property bool auth
+ * @property bool scaffold
+ * @property bool rules
  */
 class RequestGenerator extends Generator
 {
@@ -72,11 +76,9 @@ class RequestGenerator extends Generator
      *
      * @return string
      */
-    public function getAuth()
+    private function getAuth()
     {
-        $authorize = $this->auth ? 'true' : 'false';
-
-        return 'return ' . $authorize . ';';
+        return 'return ' . ($this->auth ? 'true' : 'false') . ';';
     }
 
     /**
@@ -84,7 +86,7 @@ class RequestGenerator extends Generator
      *
      * @return string
      */
-    public function getRules()
+    private function getRules()
     {
         if ( ! $this->rules) {
             return 'return [];';
@@ -98,20 +100,22 @@ class RequestGenerator extends Generator
             $results .= $this->createRules($field, $rules);
         }
 
-        $results .= "\t\t];";
-
-        return $results;
+        return $results . "\t\t];";
     }
 
+    /* ------------------------------------------------------------------------------------------------
+     |  Other Functions
+     | ------------------------------------------------------------------------------------------------
+     */
     /**
      * Create a rule.
      *
-     * @param string $field
-     * @param string $rules
+     * @param  string $field
+     * @param  string $rules
      *
      * @return string
      */
-    protected function createRules($field, $rules)
+    private function createRules($field, $rules)
     {
         $rule = str_replace(['(', ')', ';'], [':', '', ','], implode('|', $rules));
 

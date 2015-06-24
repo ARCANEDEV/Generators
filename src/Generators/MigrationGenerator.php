@@ -33,7 +33,7 @@ class MigrationGenerator extends Generator
      */
     public function getBasePath()
     {
-        return base_path('/database/migrations/');
+        return base_path('database/migrations');
     }
 
     /**
@@ -43,7 +43,7 @@ class MigrationGenerator extends Generator
      */
     public function getPath()
     {
-        return $this->getBasePath().$this->getFileName().'.php';
+        return $this->getBasePath() . $this->getFileName() . '.php';
     }
 
     /**

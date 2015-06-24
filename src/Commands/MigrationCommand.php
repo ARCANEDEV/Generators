@@ -1,10 +1,8 @@
 <?php namespace Arcanedev\Generators\Commands;
 
+use Arcanedev\Generators\Bases\Command;
 use Arcanedev\Generators\Generators\MigrationGenerator;
-use Illuminate\Console\Command;
 use Illuminate\Foundation\Composer;
-use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputOption;
 
 /**
  * Class MigrationCommand
@@ -21,7 +19,10 @@ class MigrationCommand extends Command
      *
      * @var string
      */
-    protected $name = 'generate:migration';
+    protected $signature = 'generate:migration
+                            {name : The name of class being generated.}
+                            {--fields= : The fields of migration. Separated with comma (,).}
+                            {--force : Force the creation if file already exists.}';
 
     /**
      * The description of command.
@@ -36,44 +37,21 @@ class MigrationCommand extends Command
      */
     /**
      * Execute the command.
+     *
+     * @param Composer $composer
+     *
+     * @throws \Arcanedev\Generators\Exceptions\FileAlreadyExistsException
      */
-    public function fire(Composer $composer)
+    public function handle(Composer $composer)
     {
-        $generator = new MigrationGenerator([
-            'name' => $this->argument('name'),
+        (new MigrationGenerator([
+            'name'   => $this->argument('name'),
             'fields' => $this->option('fields'),
-            'force' => $this->option('force'),
-        ]);
-
-        $generator->run();
+            'force'  => $this->option('force'),
+        ]))->run();
 
         $this->info('Migration created successfully.');
 
         $composer->dumpAutoloads();
-    }
-
-    /**
-     * The array of command arguments.
-     *
-     * @return array
-     */
-    public function getArguments()
-    {
-        return [
-            ['name', InputArgument::REQUIRED, 'The name of class being generated.', null],
-        ];
-    }
-
-    /**
-     * The array of command options.
-     *
-     * @return array
-     */
-    public function getOptions()
-    {
-        return [
-            ['fields', 'c', InputOption::VALUE_OPTIONAL, 'The fields of migration. Separated with comma (,).', null],
-            ['force', 'f', InputOption::VALUE_NONE, 'Force the creation if file already exists.', null],
-        ];
     }
 }

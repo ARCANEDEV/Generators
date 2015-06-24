@@ -1,9 +1,7 @@
 <?php namespace Arcanedev\Generators\Commands;
 
+use Arcanedev\Generators\Bases\Command;
 use Arcanedev\Generators\Generators\ScaffoldGenerator;
-use Illuminate\Console\Command;
-use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputOption;
 
 /**
  * Class ScaffoldCommand
@@ -20,7 +18,12 @@ class ScaffoldCommand extends Command
      *
      * @var string
      */
-    protected $name = 'generate:scaffold';
+    protected $signature = 'generate:scaffold
+                            {name : The entity name.}
+                            {--fields= : The fields of migration. Separated with comma (,).}
+                            {--prefix= : The prefix path & routes.}
+                            {--no-question : Don\'t ask any question.}
+                            {--force : Force the creation if file already exists.}';
 
     /**
      * The description of command.
@@ -36,35 +39,8 @@ class ScaffoldCommand extends Command
     /**
      * Execute the command.
      */
-    public function fire()
+    public function handle()
     {
         (new ScaffoldGenerator($this))->run();
-    }
-
-    /**
-     * The array of command arguments.
-     *
-     * @return array
-     */
-    public function getArguments()
-    {
-        return [
-            ['entity', InputArgument::REQUIRED, 'The entity name.', null],
-        ];
-    }
-
-    /**
-     * The array of command options.
-     *
-     * @return array
-     */
-    public function getOptions()
-    {
-        return [
-            ['fields', null, InputOption::VALUE_OPTIONAL, 'The fields of migration. Separated with comma (,).', null],
-            ['prefix', null, InputOption::VALUE_OPTIONAL, 'The prefix path & routes.', null],
-            ['no-question', null, InputOption::VALUE_NONE, 'Don\'t ask any question.', null],
-            ['force', 'f', InputOption::VALUE_NONE, 'Force the creation if file already exists.', null],
-        ];
     }
 }

@@ -105,11 +105,11 @@ class TableDumper
 
         foreach ($this->getColumns() as $column) {
             /** @var Column $column */
-            if (in_array($name = $column->getName(), $this->ignores)) {
-                continue;
-            }
+            $name = $column->getName();
 
-            $results .= "\t\t\t" . '<th>' . ucwords($name) . '</th>' . PHP_EOL;
+            if ( ! in_array($name, $this->ignores)) {
+                $results .= "\t\t\t" . '<th>' . ucwords($name) . '</th>' . PHP_EOL;
+            }
         }
 
         return $results;
@@ -128,11 +128,11 @@ class TableDumper
 
         foreach ($this->getColumns() as $column) {
             /** @var Column $column */
-            if (in_array($name = $column->getName(), $this->ignores)) {
-                continue;
-            }
+            $name = $column->getName();
 
-            $results .= "\t\t\t\t\t".'<td>{!! $'.$var.'->'.$name.' !!}</td>' . PHP_EOL;
+            if ( ! in_array($name, $this->ignores)) {
+                $results .= "\t\t\t\t\t" . '<td>{!! $' . $var . '->' . $name . ' !!}</td>' . PHP_EOL;
+            }
         }
 
         return $results;
@@ -151,15 +151,15 @@ class TableDumper
 
         foreach ($this->getColumns() as $column) {
             /** @var Column $column */
-            if (in_array($name = $column->getName(), $this->ignores)) {
-                continue;
-            }
+            $name = $column->getName();
 
-            $results .= Stub::create(__DIR__ . '/../../stubs/scaffold/row.stub', [
-                'label'  => ucwords($name),
-                'column' => $name,
-                'var'    => $var,
-            ])->render();
+            if ( ! in_array($name, $this->ignores)) {
+                $results .= Stub::create(__DIR__ . '/../../stubs/scaffold/row.stub', [
+                    'label'  => ucwords($name),
+                    'column' => $name,
+                    'var'    => $var,
+                ])->render();
+            }
         }
 
         return $results . PHP_EOL;

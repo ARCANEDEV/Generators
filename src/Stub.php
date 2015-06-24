@@ -1,3 +1,9 @@
 <?php namespace Arcanedev\Generators;
 
-class Stub extends \Arcanedev\Support\Stub {}
+use Arcanedev\Support\Stub as BaseStub;
+
+/**
+ * Class Stub
+ * @package Arcanedev\Generators
+ */
+class Stub extends BaseStub {}

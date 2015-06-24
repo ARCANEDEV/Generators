@@ -1,9 +1,7 @@
 <?php namespace Arcanedev\Generators\Commands;
 
+use Arcanedev\Generators\Bases\Command;
 use Arcanedev\Generators\Generators\ControllerGenerator;
-use Illuminate\Console\Command;
-use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputOption;
 
 /**
  * Class ControllerCommand
@@ -20,7 +18,11 @@ class ControllerCommand extends Command
      *
      * @var string
      */
-    protected $name = 'generate:controller';
+    protected $signature = 'generate:controller
+                            {name : The name of class being generated.}
+                            {--resource : Generate a resource controller.}
+                            {--scaffold : Generate a scaffold controller.}
+                            {--force : Force the creation if file already exists.}';
 
     /**
      * The description of command.
@@ -36,43 +38,15 @@ class ControllerCommand extends Command
     /**
      * Execute the command.
      */
-    public function fire()
+    public function handle()
     {
-        $generator = new ControllerGenerator([
+        (new ControllerGenerator([
             'name'      => $this->argument('name'),
             'resource'  => $this->option('resource'),
             'scaffold'  => $this->option('scaffold'),
             'force'     => $this->option('force'),
-        ]);
-
-        $generator->run();
+        ]))->run();
 
         $this->info('Controller created successfully.');
-    }
-
-    /**
-     * The array of command arguments.
-     *
-     * @return array
-     */
-    public function getArguments()
-    {
-        return [
-            ['name', InputArgument::REQUIRED, 'The name of class being generated.', null],
-        ];
-    }
-
-    /**
-     * The array of command options.
-     *
-     * @return array
-     */
-    public function getOptions()
-    {
-        return [
-            ['resource', 'r', InputOption::VALUE_NONE, 'Generate a resource controller.', null],
-            ['scaffold', 's', InputOption::VALUE_NONE, 'Generate a scaffold controller.', null],
-            ['force', 'f', InputOption::VALUE_NONE, 'Force the creation if file already exists.', null],
-        ];
     }
 }

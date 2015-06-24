@@ -1,9 +1,7 @@
 <?php namespace Arcanedev\Generators\Commands;
 
+use Arcanedev\Generators\Bases\Command;
 use Arcanedev\Generators\Generators\FormGenerator;
-use Illuminate\Console\Command;
-use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputOption;
 
 /**
  * Class FormCommand
@@ -20,7 +18,9 @@ class FormCommand extends Command
      *
      * @var string
      */
-    protected $name = 'generate:form';
+    protected $signature = 'generate:form
+                            {table? : The name of table being used.}
+                            {--fields= : The form fields.}';
 
     /**
      * The description of command.
@@ -36,7 +36,7 @@ class FormCommand extends Command
     /**
      * Execute the command.
      */
-    public function fire()
+    public function handle()
     {
         $generator = new FormGenerator(
             $this->argument('table'),
@@ -44,29 +44,5 @@ class FormCommand extends Command
         );
 
         $this->line($generator->render());
-    }
-
-    /**
-     * The array of command arguments.
-     *
-     * @return array
-     */
-    public function getArguments()
-    {
-        return [
-            ['table', InputArgument::OPTIONAL, 'The name of table being used.', null],
-        ];
-    }
-
-    /**
-     * The array of command options.
-     *
-     * @return array
-     */
-    public function getOptions()
-    {
-        return [
-            ['fields', 'f', InputOption::VALUE_OPTIONAL, 'The form fields.', null],
-        ];
     }
 }

@@ -1,9 +1,6 @@
 <?php namespace Arcanedev\Generators\Generators;
 
-use Arcanedev\Generators\Generators\FormGenerator;
-use Arcanedev\Generators\Generators\ViewGenerator;
-use Illuminate\Console\Command;
-use Illuminate\Support\Str;
+use Arcanedev\Generators\Bases\Command;
 use Arcanedev\Generators\FormDumpers\FieldsDumper;
 use Arcanedev\Generators\FormDumpers\TableDumper;
 use Arcanedev\Generators\Scaffolders\ControllerScaffolder;
@@ -21,7 +18,7 @@ class ScaffoldGenerator
     /**
      * The illuminate command instance.
      *
-     * @var \Illuminate\Console\Command
+     * @var Command
      */
     protected $console;
 
@@ -62,7 +59,7 @@ class ScaffoldGenerator
     }
 
     /* ------------------------------------------------------------------------------------------------
-     |  Main Functions
+     |  Getters & Setters
      | ------------------------------------------------------------------------------------------------
      */
     /**
@@ -70,9 +67,9 @@ class ScaffoldGenerator
      *
      * @return string
      */
-    public function getEntity()
+    private function getEntityName()
     {
-        return strtolower(str_singular($this->console->argument('entity')));
+        return strtolower(str_singular($this->console->argument('name')));
     }
 
     /**
@@ -80,9 +77,9 @@ class ScaffoldGenerator
      *
      * @return string
      */
-    public function getEntities()
+    private function getEntities()
     {
-        return str_plural($this->getEntity());
+        return str_plural($this->getEntityName());
     }
 
     /**
@@ -90,44 +87,91 @@ class ScaffoldGenerator
      *
      * @return string
      */
-    public function getControllerName()
+    private function getControllerName()
     {
-        $controller = Str::studly($this->getEntities()) . 'Controller';
+        $controller = str_studly($this->getEntities()) . 'Controller';
 
         if ($this->console->option('prefix')) {
-            $controller = Str::studly($this->getPrefix('/')) . $controller;
+            $controller = str_studly($this->getPrefix('/')) . $controller;
         }
 
         return str_replace('/', '\\', $controller);
     }
 
     /**
-     * Confirm a question with the user.
+     * Get prefix name.
      *
-     * @param string $message
+     * @param  string|null $suffix
      *
-     * @return string
+     * @return string|null
      */
-    public function confirm($message)
+    private function getPrefix($suffix = null)
     {
-        if ($this->console->option('no-question')) {
-            return true;
-        }
+        $prefix = $this->console->option('prefix');
 
-        return $this->console->confirm($message);
+        return $prefix ? ($prefix . $suffix) : null;
     }
 
     /**
+     * Get route name.
+     *
+     * @return string
+     */
+    private function getRouteName()
+    {
+        $route = $this->getEntities();
+
+        if ($this->console->option('prefix')) {
+            $route = strtolower($this->getPrefix('/')) . $route;
+        }
+
+        return $route;
+    }
+
+    /**
+     * Get view layout.
+     *
+     * @return string
+     */
+    private function getViewLayout()
+    {
+        return $this->getPrefix('/') . 'layouts/master';
+    }
+
+    /* ------------------------------------------------------------------------------------------------
+     |  Main Functions
+     | ------------------------------------------------------------------------------------------------
+     */
+    /**
+     * Run the generator.
+     */
+    public function run()
+    {
+        $this->generateModel();
+        $this->generateMigration();
+        $this->generateSeed();
+        $this->generateRequest();
+        $this->generateController();
+        $this->runMigration();
+        $this->generateViews();
+        $this->appendRoute();
+    }
+
+    /* ------------------------------------------------------------------------------------------------
+     |  Generate Functions
+     | ------------------------------------------------------------------------------------------------
+     */
+    /**
      * Generate model.
      */
-    public function generateModel()
+    private function generateModel()
     {
         if ( ! $this->confirm('Do you want to create a model?')) {
             return;
         }
 
         $this->console->call('generate:model', [
-            'name'       => $this->getEntity(),
+            'name'       => $this->getEntityName(),
             '--fillable' => $this->console->option('fields'),
             '--force'    => $this->console->option('force'),
         ]);
@@ -136,7 +180,7 @@ class ScaffoldGenerator
     /**
      * Generate seed.
      */
-    public function generateSeed()
+    private function generateSeed()
     {
         if ( ! $this->confirm('Do you want to create a database seeder class?')) {
             return;
@@ -151,7 +195,7 @@ class ScaffoldGenerator
     /**
      * Generate migration.
      */
-    public function generateMigration()
+    private function generateMigration()
     {
         if ( ! $this->confirm('Do you want to create a migration?')) {
             return;
@@ -167,7 +211,7 @@ class ScaffoldGenerator
     /**
      * Generate controller.
      */
-    public function generateController()
+    private function generateController()
     {
         if ( ! $this->confirm('Do you want to generate a controller?')) {
             return;
@@ -181,19 +225,9 @@ class ScaffoldGenerator
     }
 
     /**
-     * Get view layout.
-     *
-     * @return string
-     */
-    public function getViewLayout()
-    {
-        return $this->getPrefix('/') . 'layouts/master';
-    }
-
-    /**
      * Generate a view layout.
      */
-    public function generateViewLayout()
+    private function generateViewLayout()
     {
         if ($this->confirm('Do you want to create master view?')) {
             $this->console->call('generate:view', [
@@ -209,9 +243,9 @@ class ScaffoldGenerator
      *
      * @return ControllerScaffolder
      */
-    public function getControllerScaffolder()
+    private function getControllerScaffolder()
     {
-        return new ControllerScaffolder($this->getEntity(), $this->getPrefix());
+        return new ControllerScaffolder($this->getEntityName(), $this->getPrefix());
     }
 
     /**
@@ -219,7 +253,7 @@ class ScaffoldGenerator
      *
      * @return FormGenerator
      */
-    public function getFormGenerator()
+    private function getFormGenerator()
     {
         return new FormGenerator($this->getEntities(), $this->console->option('fields'));
     }
@@ -229,7 +263,7 @@ class ScaffoldGenerator
      *
      * @return TableDumper|FieldsDumper
      */
-    public function getTableDumper()
+    private function getTableDumper()
     {
         if ($this->migrated) {
             return new TableDumper($this->getEntities());
@@ -241,7 +275,7 @@ class ScaffoldGenerator
     /**
      * Generate views.
      */
-    public function generateViews()
+    private function generateViews()
     {
         $this->generateViewLayout();
 
@@ -259,7 +293,7 @@ class ScaffoldGenerator
      *
      * @param string $view
      */
-    public function generateView($view)
+    private function generateView($view)
     {
         $generator = new ViewGenerator([
             'name'      => $this->getPrefix('/') . $this->getEntities() . '/' . $view,
@@ -270,11 +304,11 @@ class ScaffoldGenerator
 
         $generator->appendReplacement(array_merge($this->getControllerScaffolder()->toArray(), [
             'lower_plural_entity'    => strtolower($this->getEntities()),
-            'studly_singular_entity' => Str::studly($this->getEntity()),
+            'studly_singular_entity' => str_studly($this->getEntityName()),
             'form'                   => $this->getFormGenerator()->render(),
             'table_heading'          => $this->getTableDumper()->toHeading(),
-            'table_body'             => $this->getTableDumper()->toBody($this->getEntity()),
-            'show_body'              => $this->getTableDumper()->toRows($this->getEntity()),
+            'table_body'             => $this->getTableDumper()->toBody($this->getEntityName()),
+            'show_body'              => $this->getTableDumper()->toRows($this->getEntityName()),
         ]));
 
         $generator->run();
@@ -285,7 +319,7 @@ class ScaffoldGenerator
     /**
      * Append new route.
      */
-    public function appendRoute()
+    private function appendRoute()
     {
         if ( ! $this->confirm('Do you want to append new route?')) {
             return;
@@ -300,39 +334,9 @@ class ScaffoldGenerator
     }
 
     /**
-     * Get route name.
-     *
-     * @return string
-     */
-    public function getRouteName()
-    {
-        $route = $this->getEntities();
-
-        if ($this->console->option('prefix')) {
-            $route = strtolower($this->getPrefix('/')).$route;
-        }
-
-        return $route;
-    }
-
-    /**
-     * Get prefix name.
-     *
-     * @param string|null $suffix
-     *
-     * @return string|null
-     */
-    public function getPrefix($suffix = null)
-    {
-        $prefix = $this->console->option('prefix');
-
-        return $prefix ? $prefix.$suffix : null;
-    }
-
-    /**
      * Run the migrations.
      */
-    public function runMigration()
+    private function runMigration()
     {
         if ($this->confirm('Do you want to run all migration now?')) {
             $this->migrated = true;
@@ -346,14 +350,14 @@ class ScaffoldGenerator
     /**
      * Generate request classes.
      */
-    public function generateRequest()
+    private function generateRequest()
     {
         if ( ! $this->confirm('Do you want to create form request classes?')) {
             return;
         }
 
         foreach (['Create', 'Update'] as $request) {
-            $name = $this->getPrefix('/') . $this->getEntities() . '/' . $request . Str::studly($this->getEntity()) . 'Request';
+            $name = $this->getPrefix('/') . $this->getEntities() . '/' . $request . str_studly($this->getEntityName()) . 'Request';
 
             $this->console->call('generate:request', [
                 'name'       => $name,
@@ -365,18 +369,23 @@ class ScaffoldGenerator
         }
     }
 
-    /**
-     * Run the generator.
+    /* ------------------------------------------------------------------------------------------------
+     |  Other Functions
+     | ------------------------------------------------------------------------------------------------
      */
-    public function run()
+    /**
+     * Confirm a question with the user.
+     *
+     * @param  string $message
+     *
+     * @return string
+     */
+    private function confirm($message)
     {
-        $this->generateModel();
-        $this->generateMigration();
-        $this->generateSeed();
-        $this->generateRequest();
-        $this->generateController();
-        $this->runMigration();
-        $this->generateViews();
-        $this->appendRoute();
+        if ($this->console->option('no-question')) {
+            return true;
+        }
+
+        return $this->console->confirm($message);
     }
 }

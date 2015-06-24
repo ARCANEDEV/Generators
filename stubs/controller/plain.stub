@@ -8,5 +8,4 @@ use Illuminate\Http\Request;
 class $CLASS$ extends Controller
 {
     //
-
 }

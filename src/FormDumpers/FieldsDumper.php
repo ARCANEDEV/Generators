@@ -85,11 +85,9 @@ class FieldsDumper
         $results = '';
 
         foreach ($this->getParser()->toArray() as $name => $types) {
-            if (in_array($name, $this->ignores)) {
-                continue;
+            if ( ! in_array($name, $this->ignores)) {
+                $results .= "\t\t\t" . '<th>' . ucwords($name) . '</th>' . PHP_EOL;
             }
-
-            $results .= "\t\t\t" . '<th>' . ucwords($name) . '</th>' . PHP_EOL;
         }
 
         return $results;
@@ -107,11 +105,9 @@ class FieldsDumper
         $results = '';
 
         foreach ($this->getParser()->toArray() as $name => $types) {
-            if (in_array($name, $this->ignores)) {
-                continue;
+            if ( ! in_array($name, $this->ignores)) {
+                $results .= "\t\t\t\t\t" . '<td>{!! $' . $var . '->' . $name . ' !!}</td>' . PHP_EOL;
             }
-
-            $results .= "\t\t\t\t\t" . '<td>{!! $' . $var . '->' . $name . ' !!}</td>' . PHP_EOL;
         }
 
         return $results;
@@ -129,17 +125,15 @@ class FieldsDumper
         $results = PHP_EOL;
 
         foreach ($this->getParser()->toArray() as $name => $types) {
-            if (in_array($name, $this->ignores)) {
-                continue;
+            if ( ! in_array($name, $this->ignores)) {
+                $results .= Stub::createFromPath(__DIR__ . '/../../stubs/scaffold/row.stub', [
+                    'label'  => ucwords($name),
+                    'column' => $name,
+                    'var'    => $var,
+                ])->render();
             }
-
-            $results .= Stub::createFromPath(__DIR__.'/../../stubs/scaffold/row.stub', [
-                'label'     => ucwords($name),
-                'column'    => $name,
-                'var'       => $var,
-            ])->render();
         }
 
-        return $results.PHP_EOL;
+        return $results . PHP_EOL;
     }
 }

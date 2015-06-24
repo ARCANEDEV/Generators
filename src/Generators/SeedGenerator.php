@@ -5,6 +5,8 @@ use Arcanedev\Generators\Bases\Generator;
 /**
  * Class SeedGenerator
  * @package Arcanedev\Generators\Generators
+ *
+ * @property bool master
  */
 class SeedGenerator extends Generator
 {
@@ -20,7 +22,7 @@ class SeedGenerator extends Generator
     protected $stub = 'seed';
 
     /* ------------------------------------------------------------------------------------------------
-     |  Main Functions
+     |  Getters & Setters
      | ------------------------------------------------------------------------------------------------
      */
     /**
@@ -50,9 +52,7 @@ class SeedGenerator extends Generator
      */
     public function getName()
     {
-        $suffix = $this->master ? 'DatabaseSeeder' : 'TableSeeder';
-
-        return parent::getName() . $suffix;
+        return parent::getName() . ($this->master ? 'DatabaseSeeder' : 'TableSeeder');
     }
 
     /**
@@ -62,6 +62,6 @@ class SeedGenerator extends Generator
      */
     public function getRootNamespace()
     {
-        return false;
+        return '';
     }
 }

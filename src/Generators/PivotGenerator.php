@@ -1,11 +1,14 @@
 <?php namespace Arcanedev\Generators\Generators;
 
 use Arcanedev\Generators\Bases\Generator;
-use Illuminate\Support\Str;
 
 /**
  * Class PivotGenerator
  * @package Arcanedev\Generators\Generators
+ *
+ * @property string table_one
+ * @property string table_two
+ * @property bool   timestamp
  */
 class PivotGenerator extends Generator
 {
@@ -71,7 +74,7 @@ class PivotGenerator extends Generator
      */
     public function getClass()
     {
-        return Str::studly($this->getMigrationName());
+        return str_studly($this->getMigrationName());
     }
 
     /**

@@ -6,6 +6,8 @@ use Arcanedev\Generators\Migrations\SchemaParser;
 /**
  * Class ModelGenerator
  * @package Arcanedev\Generators\Generators
+ *
+ * @property bool fillable
  */
 class ModelGenerator extends Generator
 {
@@ -21,7 +23,7 @@ class ModelGenerator extends Generator
     protected $stub = 'model';
 
     /* ------------------------------------------------------------------------------------------------
-     |  Main Functions
+     |  Getters & Setters
      | ------------------------------------------------------------------------------------------------
      */
     /**

@@ -1,9 +1,7 @@
 <?php namespace Arcanedev\Generators\Commands;
 
+use Arcanedev\Generators\Bases\Command;
 use Arcanedev\Generators\Generators\ViewGenerator;
-use Illuminate\Console\Command;
-use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputOption;
 
 /**
  * Class ViewCommand
@@ -20,7 +18,15 @@ class ViewCommand extends Command
      *
      * @var string
      */
-    protected $name = 'generate:view';
+    protected $signature = 'generate:view
+                            {name : The name of class being generated.}
+                            {--extends= : The name of view layout being used.}
+                            {--section= : The name of section being used.}
+                            {--content= : The view content.}
+                            {--template= : The path of view template.}
+                            {--master : Create a master view.}
+                            {--plain : Create a blank view.}
+                            {--force : Force the creation if file already exists.}';
 
     /**
      * The description of command.
@@ -36,9 +42,9 @@ class ViewCommand extends Command
     /**
      * Execute the command.
      */
-    public function fire()
+    public function handle()
     {
-        $generator = new ViewGenerator([
+        (new ViewGenerator([
             'name'      => $this->argument('name'),
             'extends'   => $this->option('extends'),
             'section'   => $this->option('section'),
@@ -47,40 +53,8 @@ class ViewCommand extends Command
             'content'   => $this->option('content'),
             'template'  => $this->option('template'),
             'force'     => $this->option('force'),
-        ]);
-
-        $generator->run();
+        ]))->run();
 
         $this->info('View created successfully.');
-    }
-
-    /**
-     * The array of command arguments.
-     *
-     * @return array
-     */
-    public function getArguments()
-    {
-        return [
-            ['name', InputArgument::REQUIRED, 'The name of class being generated.', null],
-        ];
-    }
-
-    /**
-     * The array of command options.
-     *
-     * @return array
-     */
-    public function getOptions()
-    {
-        return [
-            ['extends', 'e', InputOption::VALUE_OPTIONAL, 'The name of view layout being used.', 'layouts.master'],
-            ['section', 's', InputOption::VALUE_OPTIONAL, 'The name of section being used.', 'content'],
-            ['content', 'c', InputOption::VALUE_OPTIONAL, 'The view content.', null],
-            ['template', 't', InputOption::VALUE_OPTIONAL, 'The path of view template.', null],
-            ['master', 'm', InputOption::VALUE_NONE, 'Create a master view.', null],
-            ['plain', 'p', InputOption::VALUE_NONE, 'Create a blank view.', null],
-            ['force', 'f', InputOption::VALUE_NONE, 'Force the creation if file already exists.', null],
-        ];
     }
 }

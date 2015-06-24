@@ -1,9 +1,7 @@
 <?php namespace Arcanedev\Generators\Commands;
 
+use Arcanedev\Generators\Bases\Command;
 use Arcanedev\Generators\Generators\PivotGenerator;
-use Illuminate\Console\Command;
-use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputOption;
 
 /**
  * Class PivotCommand
@@ -20,7 +18,11 @@ class PivotCommand extends Command
      *
      * @var string
      */
-    protected $name = 'generate:pivot';
+    protected $signature = 'generate:pivot
+                            {table_one : The name of table one.}
+                            {table_two : The name of table two.}
+                            {--timestamp : Add timestamp to migration schema.}
+                            {--force : Force the creation if file already exists.}';
 
     /**
      * The description of command.
@@ -36,43 +38,15 @@ class PivotCommand extends Command
     /**
      * Execute the command.
      */
-    public function fire()
+    public function handle()
     {
-        $generator = new PivotGenerator([
+        (new PivotGenerator([
             'table_one' => $this->argument('table_one'),
             'table_two' => $this->argument('table_two'),
             'timestamp' => $this->option('timestamp'),
             'force'     => $this->option('force'),
-        ]);
-
-        $generator->run();
+        ]))->run();
 
         $this->info('Migration created successfully.');
-    }
-
-    /**
-     * The array of command arguments.
-     *
-     * @return array
-     */
-    public function getArguments()
-    {
-        return [
-            ['table_one', InputArgument::REQUIRED, 'The name of table one.', null],
-            ['table_two', InputArgument::REQUIRED, 'The name of table two.', null],
-        ];
-    }
-
-    /**
-     * The array of command options.
-     *
-     * @return array
-     */
-    public function getOptions()
-    {
-        return [
-            ['timestamp', 't', InputOption::VALUE_NONE, 'Add timestamp to migration schema.', null],
-            ['force', 'f', InputOption::VALUE_NONE, 'Force the creation if file already exists.', null],
-        ];
     }
 }

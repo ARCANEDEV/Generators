@@ -6,6 +6,10 @@ use Arcanedev\Generators\Scaffolders\ControllerScaffolder;
 /**
  * Class ControllerGenerator
  * @package Arcanedev\Generators\Generators
+ *
+ * @property bool                      resource
+ * @property bool                      scaffold
+ * @property ControllerScaffolder|null scaffolder
  */
 class ControllerGenerator extends Generator
 {
@@ -30,9 +34,10 @@ class ControllerGenerator extends Generator
     public function setUp()
     {
         if ($this->resource) {
-            $this->stub = 'controller/resource';
-        } elseif ($this->scaffold) {
-            $this->stub = 'controller/scaffold';
+            $this->stub       = 'controller/resource';
+        }
+        elseif ($this->scaffold) {
+            $this->stub       = 'controller/scaffold';
             $this->scaffolder = new ControllerScaffolder($this->getClass(), $this->getPrefix());
         }
     }
@@ -58,7 +63,7 @@ class ControllerGenerator extends Generator
      */
     public function getBasePath()
     {
-        return app_path().'/Http/Controllers';
+        return app_path() . '/Http/Controllers';
     }
 
     /**
@@ -68,7 +73,7 @@ class ControllerGenerator extends Generator
      */
     public function getRootNamespace()
     {
-        return $this->getAppNamespace().'Http\\Controllers\\';
+        return $this->getAppNamespace() . 'Http\\Controllers\\';
     }
 
     /**
@@ -78,10 +83,12 @@ class ControllerGenerator extends Generator
      */
     public function getReplacements()
     {
-        $replacements = array_merge(parent::getReplacements(), ['root_namespace' => $this->getAppNamespace()]);
+        $replacements = array_merge(parent::getReplacements(), [
+            'root_namespace' => $this->getAppNamespace()
+        ]);
 
         if ($this->scaffold) {
-            return array_merge($replacements, $this->scaffolder->toArray());
+            $replacements = array_merge($replacements, $this->scaffolder->toArray());
         }
 
         return $replacements;

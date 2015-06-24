@@ -10,7 +10,6 @@ use $ROOT_NAMESPACE$Http\Requests\$PREFIX_SLASH$$STUDLY_PLURAL_ENTITY$\Update$ST
 
 class $CLASS$ extends Controller
 {
-
     public function __construct()
     {
         //
@@ -107,5 +106,4 @@ class $CLASS$ extends Controller
 
         return redirect()->route('$PREFIX_DOT$$LOWER_ENTITIES$.index');
     }
-
 }

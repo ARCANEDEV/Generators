@@ -1,10 +1,9 @@
 <?php namespace Arcanedev\Generators\Bases;
 
-use Illuminate\Console\AppNamespaceDetectorTrait;
-use Illuminate\Filesystem\Filesystem;
-use Illuminate\Support\Str;
 use Arcanedev\Generators\Exceptions\FileAlreadyExistsException;
 use Arcanedev\Generators\Stub;
+use Illuminate\Console\AppNamespaceDetectorTrait;
+use Illuminate\Filesystem\Filesystem;
 
 /**
  * Class Generator
@@ -40,11 +39,18 @@ abstract class Generator
     protected $options;
 
     /**
-     * The shortname of stub.
+     * The short name of stub.
      *
      * @var string
      */
     protected $stub;
+
+    /**
+     * Force the generator
+     *
+     * @var bool
+     */
+    protected $force = false;
 
     /* ------------------------------------------------------------------------------------------------
      |  Constructor
@@ -65,6 +71,26 @@ abstract class Generator
      |  Getters & Setters
      | ------------------------------------------------------------------------------------------------
      */
+    /**
+     * Get name input.
+     *
+     * @return string
+     */
+    public function getName()
+    {
+        $name = $this->name;
+
+        if (str_contains($this->name, '\\')) {
+            $name = str_replace('\\', '/', $this->name);
+        }
+
+        if (str_contains($this->name, '/')) {
+            $name = str_replace('/', '/', $this->name);
+        }
+
+        return str_studly(str_replace(' ', '/', ucwords(str_replace('/', ' ', $name))));
+    }
+
     /**
      * Get the filesystem instance.
      *
@@ -96,7 +122,7 @@ abstract class Generator
      */
     public function getStub()
     {
-        $stub = new Stub($this->stub . '.stub', $this->getReplacements());
+        $stub = Stub::create($this->stub . '.stub', $this->getReplacements());
 
         $stub->setBasePath(__DIR__ . '/../../stubs/');
 
@@ -138,33 +164,13 @@ abstract class Generator
     }
 
     /**
-     * Get name input.
-     *
-     * @return string
-     */
-    public function getName()
-    {
-        $name = $this->name;
-
-        if (str_contains($this->name, '\\')) {
-            $name = str_replace('\\', '/', $this->name);
-        }
-
-        if (str_contains($this->name, '/')) {
-            $name = str_replace('/', '/', $this->name);
-        }
-
-        return Str::studly(str_replace(' ', '/', ucwords(str_replace('/', ' ', $name))));
-    }
-
-    /**
      * Get class name.
      *
      * @return string
      */
     public function getClass()
     {
-        return Str::studly(class_basename($this->getName()));
+        return str_studly(class_basename($this->getName()));
     }
 
     /**
@@ -200,11 +206,11 @@ abstract class Generator
 
         $rootNamespace = $this->getRootNamespace();
 
-        if ($rootNamespace == false) {
+        if ($rootNamespace === '') {
             return '';
         }
 
-        return 'namespace ' . rtrim($rootNamespace.implode($segments, '\\'), '\\') . ';';
+        return 'namespace ' . rtrim($rootNamespace . implode($segments, '\\'), '\\') . ';';
     }
 
     /**
@@ -213,28 +219,6 @@ abstract class Generator
     public function setUp()
     {
         //
-    }
-
-    /**
-     * Run the generator.
-     *
-     * @return int
-     *
-     * @throws FileAlreadyExistsException
-     */
-    public function run()
-    {
-        $this->setUp();
-
-        if ($this->filesystem->exists($path = $this->getPath()) && !$this->force) {
-            throw new FileAlreadyExistsException($path);
-        }
-
-        if ( ! $this->filesystem->isDirectory($dir = dirname($path))) {
-            $this->filesystem->makeDirectory($dir, 0777, true, true);
-        }
-
-        return $this->filesystem->put($path, $this->getStub());
     }
 
     /**
@@ -248,15 +232,16 @@ abstract class Generator
     }
 
     /**
-     * Determinate whether the given key exist in options array.
+     * Helper method for "getOption".
      *
-     * @param  string $key
+     * @param  string      $key
+     * @param  string|null $default
      *
-     * @return bool
+     * @return string
      */
-    public function hasOption($key)
+    public function option($key, $default = null)
     {
-        return array_key_exists($key, $this->options);
+        return $this->getOption($key, $default);
     }
 
     /**
@@ -277,16 +262,15 @@ abstract class Generator
     }
 
     /**
-     * Helper method for "getOption".
+     * Force the generator to overwrite
      *
-     * @param  string      $key
-     * @param  string|null $default
-     *
-     * @return string
+     * @return self
      */
-    public function option($key, $default = null)
+    public function force()
     {
-        return $this->getOption($key, $default);
+        $this->force = true;
+
+        return $this;
     }
 
     /**
@@ -303,5 +287,47 @@ abstract class Generator
         }
 
         return $this->option($key);
+    }
+
+    /* ------------------------------------------------------------------------------------------------
+     |  Main Functions
+     | ------------------------------------------------------------------------------------------------
+     */
+    /**
+     * Run the generator.
+     *
+     * @return int
+     *
+     * @throws FileAlreadyExistsException
+     */
+    public function run()
+    {
+        $this->setUp();
+
+        if ($this->filesystem->exists($path = $this->getPath()) && ! $this->force) {
+            throw new FileAlreadyExistsException($path);
+        }
+
+        if ( ! $this->filesystem->isDirectory($dir = dirname($path))) {
+            $this->filesystem->makeDirectory($dir, 0777, true, true);
+        }
+
+        return $this->filesystem->put($path, $this->getStub());
+    }
+
+    /* ------------------------------------------------------------------------------------------------
+     |  Check Functions
+     | ------------------------------------------------------------------------------------------------
+     */
+    /**
+     * Determinate whether the given key exist in options array.
+     *
+     * @param  string $key
+     *
+     * @return bool
+     */
+    public function hasOption($key)
+    {
+        return array_key_exists($key, $this->options);
     }
 }

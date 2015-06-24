@@ -17,6 +17,18 @@ class GeneratorsServiceProvider extends ServiceProvider
      */
     public function register()
     {
+        $this->registerCommands();
+    }
+
+    /* ------------------------------------------------------------------------------------------------
+     |  Other Functions
+     | ------------------------------------------------------------------------------------------------
+     */
+    /**
+     * Register the commands
+     */
+    private function registerCommands()
+    {
         $commands = [
             Commands\ModelCommand::class,
             Commands\ControllerCommand::class,

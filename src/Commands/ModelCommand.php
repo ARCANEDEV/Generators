@@ -1,9 +1,7 @@
 <?php namespace Arcanedev\Generators\Commands;
 
+use Arcanedev\Generators\Bases\Command;
 use Arcanedev\Generators\Generators\ModelGenerator;
-use Illuminate\Console\Command;
-use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputOption;
 
 /**
  * Class ModelCommand
@@ -20,7 +18,10 @@ class ModelCommand extends Command
      *
      * @var string
      */
-    protected $name = 'generate:model';
+    protected $signature = 'generate:model
+                            {name : The name of class being generated.}
+                            {--fillable= : The fillable attributes.}
+                            {--force : Force the creation if file already exists.}';
 
     /**
      * The description of command.
@@ -36,41 +37,14 @@ class ModelCommand extends Command
     /**
      * Execute the command.
      */
-    public function fire()
+    public function handle()
     {
-        $generator = new ModelGenerator([
+        (new ModelGenerator([
             'name'      => $this->argument('name'),
             'fillable'  => $this->option('fillable'),
             'force'     => $this->option('force'),
-        ]);
-
-        $generator->run();
+        ]))->run();
 
         $this->info('Model created successfully.');
-    }
-
-    /**
-     * The array of command arguments.
-     *
-     * @return array
-     */
-    public function getArguments()
-    {
-        return [
-            ['name', InputArgument::REQUIRED, 'The name of class being generated.', null],
-        ];
-    }
-
-    /**
-     * The array of command options.
-     *
-     * @return array
-     */
-    public function getOptions()
-    {
-        return [
-            ['fillable', null, InputOption::VALUE_OPTIONAL, 'The fillable attributes.', null],
-            ['force', 'f', InputOption::VALUE_NONE, 'Force the creation if file already exists.', null],
-        ];
     }
 }

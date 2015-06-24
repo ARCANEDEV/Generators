@@ -1,9 +1,7 @@
 <?php namespace Arcanedev\Generators\Commands;
 
+use Arcanedev\Generators\Bases\Command;
 use Arcanedev\Generators\Generators\ConsoleGenerator;
-use Illuminate\Console\Command;
-use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputOption;
 
 /**
  * Class ConsoleCommand
@@ -20,7 +18,11 @@ class ConsoleCommand extends Command
      *
      * @var string
      */
-    protected $name = 'generate:console';
+    protected $signature = 'generate:console
+                            {name : The name of class being generated.}
+                            {--command= : The name of command being used.}
+                            {--description= : The description of command being used.}
+                            {--force : Force the creation if file already exists.}';
 
     /**
      * The description of command.
@@ -36,43 +38,15 @@ class ConsoleCommand extends Command
     /**
      * Execute the command.
      */
-    public function fire()
+    public function handle()
     {
-        $generator = new ConsoleGenerator([
+        (new ConsoleGenerator([
             'name'        => $this->argument('name'),
             'force'       => $this->option('force'),
             'command'     => $this->option('command'),
             'description' => $this->option('description'),
-        ]);
-
-        $generator->run();
+        ]))->run();
 
         $this->info('Console created successfully.');
-    }
-
-    /**
-     * The array of command arguments.
-     *
-     * @return array
-     */
-    public function getArguments()
-    {
-        return [
-            ['name', InputArgument::REQUIRED, 'The name of class being generated.', null],
-        ];
-    }
-
-    /**
-     * The array of command options.
-     *
-     * @return array
-     */
-    public function getOptions()
-    {
-        return [
-            ['command', 'c', InputOption::VALUE_OPTIONAL, 'The name of command being used.', null],
-            ['description', 'd', InputOption::VALUE_OPTIONAL, 'The description of command being used.', null],
-            ['force', 'f', InputOption::VALUE_NONE, 'Force the creation if file already exists.', null],
-        ];
     }
 }

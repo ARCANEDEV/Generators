@@ -72,7 +72,7 @@ class ControllerScaffolder implements Arrayable
      */
     public function getStudlyPrefix()
     {
-        return Str::studly($this->prefix ?: '');
+        return str_studly($this->prefix ?: '');
     }
 
     /**
@@ -102,7 +102,7 @@ class ControllerScaffolder implements Arrayable
      */
     public function getStudlyEntity()
     {
-        return Str::studly($this->entity);
+        return str_studly($this->entity);
     }
 
     /**
@@ -132,7 +132,7 @@ class ControllerScaffolder implements Arrayable
      */
     public function getPrefixSlash()
     {
-        return $this->prefix ? Str::studly($this->prefix.'\\') : '';
+        return $this->prefix ? str_studly($this->prefix.'\\') : '';
     }
 
     /**

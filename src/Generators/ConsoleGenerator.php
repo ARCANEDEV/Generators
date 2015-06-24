@@ -40,7 +40,7 @@ class ConsoleGenerator extends Generator
      */
     public function getRootNamespace()
     {
-        return $this->getAppNamespace().'Console\\Commands\\';
+        return $this->getAppNamespace() . 'Console\\Commands\\';
     }
 
     /**

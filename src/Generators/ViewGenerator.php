@@ -6,9 +6,18 @@ use Arcanedev\Generators\Stub;
 /**
  * Class ViewGenerator
  * @package Arcanedev\Generators
+ *
+ * @property string extends
+ * @property string section
+ * @property string content
+ * @property bool   master
  */
 class ViewGenerator extends Generator
 {
+    /* ------------------------------------------------------------------------------------------------
+     |  Properties
+     | ------------------------------------------------------------------------------------------------
+     */
     /**
      * Get stub name.
      *
@@ -23,16 +32,10 @@ class ViewGenerator extends Generator
      */
     protected $customReplacements = [];
 
-    /**
-     * Setup.
+    /* ------------------------------------------------------------------------------------------------
+     |  Getters & Setters
+     | ------------------------------------------------------------------------------------------------
      */
-    public function setUp()
-    {
-        if ($this->master) {
-            $this->stub = 'views/master';
-        }
-    }
-
     /**
      * Get base path of destination file.
      *
@@ -88,13 +91,11 @@ class ViewGenerator extends Generator
      */
     public function getReplacements()
     {
-        $replaces = [
-            'extends' => $this->extends,
-            'section' => $this->section,
+        return $this->customReplacements + [
+            'extends' => $this->extends, // 'layouts.master'
+            'section' => $this->section, // 'content'
             'content' => $this->content,
         ];
-
-        return $this->customReplacements + $replaces;
     }
 
     /**
@@ -109,5 +110,19 @@ class ViewGenerator extends Generator
         $this->customReplacements = $replacements;
 
         return $this;
+    }
+
+    /* ------------------------------------------------------------------------------------------------
+     |  Main Functions
+     | ------------------------------------------------------------------------------------------------
+     */
+    /**
+     * Setup.
+     */
+    public function setUp()
+    {
+        if ($this->master) {
+            $this->stub = 'views/master';
+        }
     }
 }

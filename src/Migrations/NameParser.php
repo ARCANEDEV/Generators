@@ -30,24 +30,10 @@ class NameParser
      * @var array
      */
     protected $actions = [
-        'create' => [
-            'create',
-            'make',
-        ],
-        'delete' => [
-            'delete',
-            'remove',
-        ],
-        'add' => [
-            'add',
-            'update',
-            'append',
-            'insert',
-        ],
-        'drop' => [
-            'destroy',
-            'drop',
-        ],
+        'create' => ['create', 'make'],
+        'delete' => ['delete', 'remove'],
+        'add'    => ['add', 'update', 'append', 'insert'],
+        'drop'   => ['destroy', 'drop'],
     ];
 
     /* ------------------------------------------------------------------------------------------------
@@ -183,7 +169,7 @@ class NameParser
      */
     public function is($type)
     {
-        return $type == $this->getAction();
+        return $type === $this->getAction();
     }
 
     /**
