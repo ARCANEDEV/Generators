@@ -1,8 +1,8 @@
 <?php namespace Arcanedev\Generators\FormDumpers;
 
 use Arcanedev\Generators\Migrations\SchemaParser;
-use Arcanedev\Generators\Stub;
 use Arcanedev\Generators\Traits\StubTrait;
+use Arcanedev\Support\Stub;
 
 /**
  * Class FieldsDumper

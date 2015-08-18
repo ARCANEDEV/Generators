@@ -1,9 +1,9 @@
 <?php namespace Arcanedev\Generators\FormDumpers;
 
 use Arcanedev\Generators\Traits\StubTrait;
+use Arcanedev\Support\Stub;
 use Doctrine\DBAL\Schema\Column;
 use Illuminate\Support\Facades\DB;
-use Arcanedev\Generators\Stub;
 
 /**
  * Class TableDumper

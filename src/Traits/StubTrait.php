@@ -1,6 +1,6 @@
 <?php namespace Arcanedev\Generators\Traits;
 
-use Arcanedev\Generators\Stub;
+use Arcanedev\Support\Stub;
 
 /**
  * Trait StubTrait
@@ -117,6 +117,8 @@ trait StubTrait
     public function getFieldType($types)
     {
         return array_first($types, function ($key, $value) {
+            unset($key);
+
             return $value;
         });
     }
