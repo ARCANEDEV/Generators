@@ -6,17 +6,18 @@
     "authors": [
       {
           "name": "ARCANEDEV",
-          "email": "arcanedev.maroc@gmail.com"
+          "email": "arcanedev.maroc@gmail.com",
+          "homepage": "https://github.com/ARCANEDEV"
       }
     ],
     "require": {
         "php": ">=5.5.9",
-        "arcanedev/support": "~1.0",
+        "arcanedev/support": "~2.0",
         "doctrine/dbal": "~2.5"
     },
     "require-dev": {
-        "orchestra/testbench": "~3.1",
-        "phpunit/phpunit": "~4.7",
+        "orchestra/testbench": "~3.1.0",
+        "phpunit/phpunit": "~4.0",
         "phpunit/phpcov": "~2.0",
         "mockery/mockery": "~0.9"
     },
