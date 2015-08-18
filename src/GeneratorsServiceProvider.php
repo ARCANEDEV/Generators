@@ -1,13 +1,19 @@
 <?php namespace Arcanedev\Generators;
 
-use Illuminate\Support\ServiceProvider;
+use Arcanedev\Support\Laravel\PackageServiceProvider;
 
 /**
  * Class GeneratorsServiceProvider
  * @package Arcanedev\Generators
  */
-class GeneratorsServiceProvider extends ServiceProvider
+class GeneratorsServiceProvider extends PackageServiceProvider
 {
+    /* ------------------------------------------------------------------------------------------------
+     |  Properties
+     | ------------------------------------------------------------------------------------------------
+     */
+    protected $package = 'generators';
+
     /* ------------------------------------------------------------------------------------------------
      |  Main Functions
      | ------------------------------------------------------------------------------------------------
@@ -17,33 +23,15 @@ class GeneratorsServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->registerCommands();
+        $this->registerProviders();
     }
 
     /* ------------------------------------------------------------------------------------------------
      |  Other Functions
      | ------------------------------------------------------------------------------------------------
      */
-    /**
-     * Register the commands
-     */
-    private function registerCommands()
+    private function registerProviders()
     {
-        $commands = [
-            Commands\ModelCommand::class,
-            Commands\ControllerCommand::class,
-            Commands\ConsoleCommand::class,
-            Commands\ViewCommand::class,
-            Commands\SeedCommand::class,
-            Commands\MigrationCommand::class,
-            Commands\RequestCommand::class,
-            Commands\PivotCommand::class,
-            Commands\ScaffoldCommand::class,
-            Commands\FormCommand::class,
-        ];
-
-        foreach ($commands as $command) {
-            $this->commands($command);
-        }
+        $this->app->register(Providers\CommandsServiceProvider::class);
     }
 }
