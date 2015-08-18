@@ -1,13 +1,12 @@
 <?php namespace Arcanedev\Generators\Commands;
 
-use Arcanedev\Generators\Bases\Command;
-use Arcanedev\Generators\Generators\ViewGenerator;
+use Arcanedev\Generators\Bases\GeneratorCommand;
 
 /**
- * Class ViewCommand
+ * Class GenerateViewCommand
  * @package Arcanedev\Generators\Commands
  */
-class ViewCommand extends Command
+class GenerateViewGeneratorCommand extends GeneratorCommand
 {
     /* ------------------------------------------------------------------------------------------------
      |  Properties
@@ -44,16 +43,18 @@ class ViewCommand extends Command
      */
     public function handle()
     {
-        (new ViewGenerator([
-            'name'      => $this->argument('name'),
-            'extends'   => $this->option('extends'),
-            'section'   => $this->option('section'),
-            'master'    => $this->option('master'),
-            'plain'     => $this->option('plain'),
-            'content'   => $this->option('content'),
-            'template'  => $this->option('template'),
-            'force'     => $this->option('force'),
-        ]))->run();
+        $this->generator
+            ->setConsole($this)
+            ->setOptions([
+                'name'      => $this->argument('name'),
+                'extends'   => $this->option('extends'),
+                'section'   => $this->option('section'),
+                'master'    => $this->option('master'),
+                'plain'     => $this->option('plain'),
+                'content'   => $this->option('content'),
+                'template'  => $this->option('template'),
+                'force'     => $this->option('force'),
+            ])->run();
 
         $this->info('View created successfully.');
     }

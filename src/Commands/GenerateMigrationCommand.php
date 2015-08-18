@@ -1,16 +1,14 @@
 <?php namespace Arcanedev\Generators\Commands;
 
-use Arcanedev\Generators\Bases\Command;
-use Arcanedev\Generators\Generators\SeedGenerator;
+use Arcanedev\Generators\Bases\GeneratorCommand;
+use Arcanedev\Generators\Exceptions\FileAlreadyExistsException;
 use Illuminate\Foundation\Composer;
-use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputOption;
 
 /**
- * Class SeedCommand
+ * Class GenerateMigrationCommand
  * @package Arcanedev\Generators\Commands
  */
-class SeedCommand extends Command
+class GenerateMigrationGeneratorCommand extends GeneratorCommand
 {
     /* ------------------------------------------------------------------------------------------------
      |  Properties
@@ -21,9 +19,9 @@ class SeedCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'generate:seed
+    protected $signature = 'generate:migration
                             {name : The name of class being generated.}
-                            {--master : Generate master database seeder.}
+                            {--fields= : The fields of migration. Separated with comma (,).}
                             {--force : Force the creation if file already exists.}';
 
     /**
@@ -31,7 +29,7 @@ class SeedCommand extends Command
      *
      * @var string
      */
-    protected $description = 'Generate a new seed.';
+    protected $description = 'Generate a new migration.';
 
     /* ------------------------------------------------------------------------------------------------
      |  Main Functions
@@ -39,16 +37,22 @@ class SeedCommand extends Command
      */
     /**
      * Execute the command.
+     *
+     * @param  Composer $composer
+     *
+     * @throws FileAlreadyExistsException
      */
     public function handle(Composer $composer)
     {
-        (new SeedGenerator([
-            'name'   => $this->argument('name'),
-            'master' => $this->option('master'),
-            'force'  => $this->option('force'),
-        ]))->run();
+        $this->generator
+            ->setConsole($this)
+            ->setOptions([
+                'name'   => $this->argument('name'),
+                'fields' => $this->option('fields'),
+                'force'  => $this->option('force'),
+            ])->run();
 
-        $this->info('Seed created successfully.');
+        $this->info('Migration created successfully.');
 
         $composer->dumpAutoloads();
     }

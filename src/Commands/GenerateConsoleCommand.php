@@ -1,13 +1,12 @@
 <?php namespace Arcanedev\Generators\Commands;
 
-use Arcanedev\Generators\Bases\Command;
-use Arcanedev\Generators\Generators\ModelGenerator;
+use Arcanedev\Generators\Bases\GeneratorCommand;
 
 /**
- * Class ModelCommand
+ * Class GenerateConsoleCommand
  * @package Arcanedev\Generators\Commands
  */
-class ModelCommand extends Command
+class GenerateConsoleGeneratorCommand extends GeneratorCommand
 {
     /* ------------------------------------------------------------------------------------------------
      |  Properties
@@ -18,9 +17,10 @@ class ModelCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'generate:model
+    protected $signature = 'generate:console
                             {name : The name of class being generated.}
-                            {--fillable= : The fillable attributes.}
+                            {--command= : The name of command being used.}
+                            {--description= : The description of command being used.}
                             {--force : Force the creation if file already exists.}';
 
     /**
@@ -28,7 +28,7 @@ class ModelCommand extends Command
      *
      * @var string
      */
-    protected $description = 'Generate a new model.';
+    protected $description = 'Generate a new console command.';
 
     /* ------------------------------------------------------------------------------------------------
      |  Main Functions
@@ -39,12 +39,15 @@ class ModelCommand extends Command
      */
     public function handle()
     {
-        (new ModelGenerator([
-            'name'      => $this->argument('name'),
-            'fillable'  => $this->option('fillable'),
-            'force'     => $this->option('force'),
-        ]))->run();
+        $this->generator
+            ->setConsole($this)
+            ->setOptions([
+                'name'        => $this->argument('name'),
+                'force'       => $this->option('force'),
+                'command'     => $this->option('command'),
+                'description' => $this->option('description'),
+            ])->run();
 
-        $this->info('Model created successfully.');
+        $this->info('Console created successfully.');
     }
 }

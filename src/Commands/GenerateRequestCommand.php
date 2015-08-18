@@ -1,13 +1,12 @@
 <?php namespace Arcanedev\Generators\Commands;
 
-use Arcanedev\Generators\Bases\Command;
-use Arcanedev\Generators\Generators\ControllerGenerator;
+use Arcanedev\Generators\Bases\GeneratorCommand;
 
 /**
- * Class ControllerCommand
+ * Class GenerateRequestCommand
  * @package Arcanedev\Generators\Commands
  */
-class ControllerCommand extends Command
+class GenerateRequestGeneratorCommand extends GeneratorCommand
 {
     /* ------------------------------------------------------------------------------------------------
      |  Properties
@@ -18,10 +17,11 @@ class ControllerCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'generate:controller
+    protected $signature = 'generate:request
                             {name : The name of class being generated.}
-                            {--resource : Generate a resource controller.}
-                            {--scaffold : Generate a scaffold controller.}
+                            {--rules= : The rules.}
+                            {--scaffold : Determine whether the request class generated with scaffold.}
+                            {--auth : Determine whether the request class needs authorized.}
                             {--force : Force the creation if file already exists.}';
 
     /**
@@ -29,7 +29,7 @@ class ControllerCommand extends Command
      *
      * @var string
      */
-    protected $description = 'Generate a new controller.';
+    protected $description = 'Generate a new form request class.';
 
     /* ------------------------------------------------------------------------------------------------
      |  Main Functions
@@ -40,13 +40,16 @@ class ControllerCommand extends Command
      */
     public function handle()
     {
-        (new ControllerGenerator([
-            'name'      => $this->argument('name'),
-            'resource'  => $this->option('resource'),
-            'scaffold'  => $this->option('scaffold'),
-            'force'     => $this->option('force'),
-        ]))->run();
+        $this->generator
+            ->setConsole($this)
+            ->setOptions([
+                'name'      => $this->argument('name'),
+                'rules'     => $this->option('rules'),
+                'auth'      => $this->option('auth'),
+                'scaffold'  => $this->option('scaffold'),
+                'force'     => $this->option('force'),
+            ])->run();
 
-        $this->info('Controller created successfully.');
+        $this->info('Form request created successfully.');
     }
 }

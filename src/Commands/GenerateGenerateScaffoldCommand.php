@@ -1,13 +1,12 @@
 <?php namespace Arcanedev\Generators\Commands;
 
-use Arcanedev\Generators\Bases\Command;
-use Arcanedev\Generators\Generators\ConsoleGenerator;
+use Arcanedev\Generators\Bases\GeneratorCommand;
 
 /**
- * Class ConsoleCommand
+ * Class GenerateScaffoldCommand
  * @package Arcanedev\Generators\Commands
  */
-class ConsoleCommand extends Command
+class GenerateScaffoldGeneratorCommand extends GeneratorCommand
 {
     /* ------------------------------------------------------------------------------------------------
      |  Properties
@@ -18,10 +17,11 @@ class ConsoleCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'generate:console
-                            {name : The name of class being generated.}
-                            {--command= : The name of command being used.}
-                            {--description= : The description of command being used.}
+    protected $signature = 'generate:scaffold
+                            {name : The entity name.}
+                            {--fields= : The fields of migration. Separated with comma (,).}
+                            {--prefix= : The prefix path & routes.}
+                            {--no-question : Don\'t ask any question.}
                             {--force : Force the creation if file already exists.}';
 
     /**
@@ -29,7 +29,7 @@ class ConsoleCommand extends Command
      *
      * @var string
      */
-    protected $description = 'Generate a new console command.';
+    protected $description = 'Generate a new scaffold resource.';
 
     /* ------------------------------------------------------------------------------------------------
      |  Main Functions
@@ -40,13 +40,8 @@ class ConsoleCommand extends Command
      */
     public function handle()
     {
-        (new ConsoleGenerator([
-            'name'        => $this->argument('name'),
-            'force'       => $this->option('force'),
-            'command'     => $this->option('command'),
-            'description' => $this->option('description'),
-        ]))->run();
-
-        $this->info('Console created successfully.');
+        $this->generator
+            ->setConsole($this)
+            ->run();
     }
 }

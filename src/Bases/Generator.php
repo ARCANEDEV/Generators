@@ -1,7 +1,8 @@
 <?php namespace Arcanedev\Generators\Bases;
 
+use Arcanedev\Generators\Contracts\GeneratorInterface;
 use Arcanedev\Generators\Exceptions\FileAlreadyExistsException;
-use Arcanedev\Generators\Stub;
+use Arcanedev\Support\Stub;
 use Illuminate\Console\AppNamespaceDetectorTrait;
 use Illuminate\Filesystem\Filesystem;
 
@@ -9,7 +10,7 @@ use Illuminate\Filesystem\Filesystem;
  * Class Generator
  * @package Arcanedev\Generators\Bases
  */
-abstract class Generator
+abstract class Generator implements GeneratorInterface
 {
     /* ------------------------------------------------------------------------------------------------
      |  Traits
@@ -21,8 +22,14 @@ abstract class Generator
      |  Properties
      | ------------------------------------------------------------------------------------------------
      */
-
     protected $name;
+
+    /**
+     * The illuminate command instance.
+     *
+     * @var GeneratorCommand
+     */
+    protected $console;
 
     /**
      * The filesystem instance.
@@ -64,7 +71,7 @@ abstract class Generator
     public function __construct(array $options = [])
     {
         $this->filesystem = new Filesystem;
-        $this->options    = $options;
+        $this->setOptions($options);
     }
 
     /* ------------------------------------------------------------------------------------------------
@@ -89,6 +96,20 @@ abstract class Generator
         }
 
         return str_studly(str_replace(' ', '/', ucwords(str_replace('/', ' ', $name))));
+    }
+
+    /**
+     * Set generator options
+     *
+     * @param  GeneratorCommand $console
+     *
+     * @return self
+     */
+    public function setConsole(GeneratorCommand $console)
+    {
+        $this->console = $console;
+
+        return $this;
     }
 
     /**
@@ -224,11 +245,25 @@ abstract class Generator
     /**
      * Get options.
      *
-     * @return string
+     * @return array
      */
     public function getOptions()
     {
         return $this->options;
+    }
+
+    /**
+     * Set generator options
+     *
+     * @param  array $options
+     *
+     * @return self
+     */
+    public function setOptions(array $options)
+    {
+        $this->options = $options;
+
+        return $this;
     }
 
     /**

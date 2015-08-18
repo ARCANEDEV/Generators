@@ -1,13 +1,12 @@
 <?php namespace Arcanedev\Generators\Commands;
 
-use Arcanedev\Generators\Bases\Command;
-use Arcanedev\Generators\Generators\ScaffoldGenerator;
+use Arcanedev\Generators\Bases\GeneratorCommand;
 
 /**
- * Class ScaffoldCommand
+ * Class GenerateFormCommand
  * @package Arcanedev\Generators\Commands
  */
-class ScaffoldCommand extends Command
+class GenerateFormGeneratorCommand extends GeneratorCommand
 {
     /* ------------------------------------------------------------------------------------------------
      |  Properties
@@ -18,19 +17,16 @@ class ScaffoldCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'generate:scaffold
-                            {name : The entity name.}
-                            {--fields= : The fields of migration. Separated with comma (,).}
-                            {--prefix= : The prefix path & routes.}
-                            {--no-question : Don\'t ask any question.}
-                            {--force : Force the creation if file already exists.}';
+    protected $signature = 'generate:form
+                            {table? : The name of table being used.}
+                            {--fields= : The form fields.}';
 
     /**
      * The description of command.
      *
      * @var string
      */
-    protected $description = 'Generate a new scaffold resource.';
+    protected $description = 'Generate a new form.';
 
     /* ------------------------------------------------------------------------------------------------
      |  Main Functions
@@ -41,6 +37,13 @@ class ScaffoldCommand extends Command
      */
     public function handle()
     {
-        (new ScaffoldGenerator($this))->run();
+        $result = $this->generator
+            ->setConsole($this)
+            ->setOptions([
+                'name'   => $this->argument('table'),
+                'fields' => $this->option('fields')
+            ])->run();
+
+        $this->line($result);
     }
 }
