@@ -32,7 +32,7 @@ class SeedGenerator extends Generator
      */
     public function getBasePath()
     {
-        return base_path('database/seeds');
+        return database_path('seeds');
     }
 
     /**

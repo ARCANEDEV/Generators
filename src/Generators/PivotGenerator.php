@@ -34,7 +34,7 @@ class PivotGenerator extends Generator
      */
     public function getBasePath()
     {
-        return base_path('database/migrations');
+        return database_path('migrations');
     }
 
     /**

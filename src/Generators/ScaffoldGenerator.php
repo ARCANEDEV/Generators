@@ -1,15 +1,17 @@
 <?php namespace Arcanedev\Generators\Generators;
 
-use Arcanedev\Generators\Bases\Command;
+use Arcanedev\Generators\Bases\GeneratorCommand;
+use Arcanedev\Generators\Contracts\GeneratorInterface;
 use Arcanedev\Generators\FormDumpers\FieldsDumper;
 use Arcanedev\Generators\FormDumpers\TableDumper;
 use Arcanedev\Generators\Scaffolders\ControllerScaffolder;
+use Illuminate\Foundation\Application;
 
 /**
  * Class ScaffoldGenerator
  * @package Arcanedev\Generators\Generators
  */
-class ScaffoldGenerator
+class ScaffoldGenerator implements GeneratorInterface
 {
     /* ------------------------------------------------------------------------------------------------
      |  Properties
@@ -18,14 +20,14 @@ class ScaffoldGenerator
     /**
      * The illuminate command instance.
      *
-     * @var Command
+     * @var GeneratorCommand
      */
     protected $console;
 
     /**
      * The laravel instance.
      *
-     * @var \Illuminate\Foundation\Application
+     * @var Application
      */
     protected $app;
 
@@ -50,18 +52,44 @@ class ScaffoldGenerator
     /**
      * The constructor.
      *
-     * @param Command $console
+     * @param GeneratorCommand $console
      */
-    public function __construct(Command $console)
+    public function __construct(GeneratorCommand $console = null)
     {
-        $this->console = $console;
-        $this->app     = $console->getLaravel();
+        $this->setConsole($console);
+        $this->app = $console->getLaravel();
     }
 
     /* ------------------------------------------------------------------------------------------------
      |  Getters & Setters
      | ------------------------------------------------------------------------------------------------
      */
+    /**
+     * Set generator options
+     *
+     * @param  GeneratorCommand $console
+     *
+     * @return self
+     */
+    public function setConsole(GeneratorCommand $console)
+    {
+        $this->console = $console;
+
+        return $this;
+    }
+
+    /**
+     * Set generator options
+     *
+     * @param  array $options
+     *
+     * @return self
+     */
+    public function setOptions(array $options)
+    {
+        // TODO: Implement setOptions() method.
+    }
+
     /**
      * Get entity name.
      *

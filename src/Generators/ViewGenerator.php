@@ -1,7 +1,7 @@
 <?php namespace Arcanedev\Generators\Generators;
 
 use Arcanedev\Generators\Bases\Generator;
-use Arcanedev\Generators\Stub;
+use Arcanedev\Support\Stub;
 
 /**
  * Class ViewGenerator

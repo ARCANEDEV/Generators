@@ -3,7 +3,7 @@
 use Arcanedev\Generators\Bases\Generator;
 use Arcanedev\Generators\Migrations\NameParser;
 use Arcanedev\Generators\Migrations\SchemaParser;
-use Arcanedev\Generators\Stub;
+use Arcanedev\Support\Stub;
 
 /**
  * Class MigrationGenerator
@@ -33,7 +33,7 @@ class MigrationGenerator extends Generator
      */
     public function getBasePath()
     {
-        return base_path('database/migrations');
+        return database_path('migrations');
     }
 
     /**
