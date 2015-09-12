@@ -1,7 +1,14 @@
-<?php namespace Arcanedev\Generators\Tests;
+<?php namespace Arcanedev\Generators\Tests\Providers;
 
-use Arcanedev\Generators\GeneratorsServiceProvider;
+use Arcanedev\Generators\Providers\GeneratorsServiceProvider;
+use Arcanedev\Generators\Tests\TestCase;
 
+/**
+ * Class     GeneratorsServiceProviderTest
+ *
+ * @package  Arcanedev\Generators\Tests\Providers
+ * @author   ARCANEDEV <arcanedev.maroc@gmail.com>
+ */
 class GeneratorsServiceProviderTest extends TestCase
 {
     /* ------------------------------------------------------------------------------------------------
@@ -40,8 +47,22 @@ class GeneratorsServiceProviderTest extends TestCase
     }
 
     /** @test */
-    public function it_can_provide()
+    public function it_can_provides()
     {
-        $this->assertEmpty($this->provider->provides());
+        $provided = $this->provider->provides();
+
+        $this->assertCount(10, $provided);
+        $this->assertEquals([
+            'arcanedev.generators.model',
+            'arcanedev.generators.controller',
+            'arcanedev.generators.console',
+            'arcanedev.generators.view',
+            'arcanedev.generators.seed',
+            'arcanedev.generators.migration',
+            'arcanedev.generators.request',
+            'arcanedev.generators.pivot',
+            'arcanedev.generators.scaffold',
+            'arcanedev.generators.form',
+        ], $provided);
     }
 }
