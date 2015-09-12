@@ -10,17 +10,8 @@ use Arcanedev\Generators\Commands\GenerateRequestGeneratorCommand;
 use Arcanedev\Generators\Commands\GenerateScaffoldGeneratorCommand;
 use Arcanedev\Generators\Commands\GenerateSeedGeneratorCommand;
 use Arcanedev\Generators\Commands\GenerateViewGeneratorCommand;
-use Arcanedev\Generators\Generators\ConsoleGenerator;
-use Arcanedev\Generators\Generators\ControllerGenerator;
-use Arcanedev\Generators\Generators\FormGenerator;
-use Arcanedev\Generators\Generators\MigrationGenerator;
-use Arcanedev\Generators\Generators\ModelGenerator;
-use Arcanedev\Generators\Generators\PivotGenerator;
-use Arcanedev\Generators\Generators\RequestGenerator;
-use Arcanedev\Generators\Generators\ScaffoldGenerator;
-use Arcanedev\Generators\Generators\SeedGenerator;
-use Arcanedev\Generators\Generators\ViewGenerator;
-use Arcanedev\Support\Laravel\ServiceProvider;
+use Arcanedev\Generators\Contracts\GeneratorInterface;
+use Arcanedev\Support\ServiceProvider;
 use Closure;
 
 /**
@@ -30,15 +21,16 @@ use Closure;
 class CommandsServiceProvider extends ServiceProvider
 {
     /* ------------------------------------------------------------------------------------------------
-     |  Constants
-     | ------------------------------------------------------------------------------------------------
-     */
-    const COMMAND_KEY = 'generator';
-
-    /* ------------------------------------------------------------------------------------------------
      |  Properties
      | ------------------------------------------------------------------------------------------------
      */
+    /** @var string */
+    protected $vendor   = 'arcanedev';
+
+    /** @var string */
+    protected $package  = 'generators';
+
+    /** @var array */
     protected $commands = [];
 
     /**
@@ -71,96 +63,136 @@ class CommandsServiceProvider extends ServiceProvider
         $this->commands($this->commands);
     }
 
+    /**
+     * Get the provided commands by the provider.
+     *
+     * @return array
+     */
+    public function provides()
+    {
+        return $this->commands;
+    }
+
     /* ------------------------------------------------------------------------------------------------
      |  Commands Functions
      | ------------------------------------------------------------------------------------------------
+     */
+    /**
+     * Register the model generator.
      */
     private function registerGenerateModelCommand()
     {
         $this->registerCommand('model', function() {
             return new GenerateModelGeneratorCommand(
-                new ModelGenerator
+                $this->getGenerator('model')
             );
         });
     }
 
+    /**
+     * Register the controller generator.
+     */
     private function registerGenerateControllerCommand()
     {
         $this->registerCommand('controller', function() {
             return new GenerateControllerGeneratorCommand(
-                new ControllerGenerator
+                $this->getGenerator('controller')
             );
         });
     }
 
+    /**
+     * Register the console generator.
+     */
     private function registerGenerateConsoleCommand()
     {
         $this->registerCommand('console', function() {
             return new GenerateConsoleGeneratorCommand(
-                new ConsoleGenerator
+                $this->getGenerator('console')
             );
         });
     }
 
+    /**
+     * Register the view generator.
+     */
     private function registerGenerateViewCommand()
     {
         $this->registerCommand('view', function() {
             return new GenerateViewGeneratorCommand(
-                new ViewGenerator
+                $this->getGenerator('view')
             );
         });
     }
 
+    /**
+     * Register the seed generator.
+     */
     private function registerGenerateSeedCommand()
     {
         $this->registerCommand('seed', function() {
             return new GenerateSeedGeneratorCommand(
-                new SeedGenerator
+                $this->getGenerator('seed')
             );
         });
     }
 
+    /**
+     * Register the migration generator.
+     */
     private function registerGenerateMigrationCommand()
     {
         $this->registerCommand('migration', function() {
             return new GenerateMigrationGeneratorCommand(
-                new MigrationGenerator
+                $this->getGenerator('migration')
             );
         });
     }
 
+    /**
+     * Register the request generator.
+     */
     private function registerGenerateRequestCommand()
     {
         $this->registerCommand('request', function() {
             return new GenerateRequestGeneratorCommand(
-                new RequestGenerator
+                $this->getGenerator('request')
             );
         });
     }
 
+    /**
+     * Register the pivot generator.
+     */
     private function registerGeneratePivotCommand()
     {
         $this->registerCommand('pivot', function() {
             return new GeneratePivotGeneratorCommand(
-                new PivotGenerator
+                $this->getGenerator('pivot')
             );
         });
     }
 
+    /**
+     * Register the scaffold generator.
+     */
     private function registerGenerateScaffoldCommand()
     {
         $this->registerCommand('scaffold', function() {
             return new GenerateScaffoldGeneratorCommand(
-                new ScaffoldGenerator
+                $this->getGenerator('scaffold')
             );
         });
     }
 
+    /**
+     * Register the form generator.
+     */
     private function registerGenerateFormCommand()
     {
         $this->registerCommand('form', function() {
             return new GenerateFormGeneratorCommand(
-                new FormGenerator
+                $this->getGenerator('form')
             );
         });
     }
@@ -170,19 +202,31 @@ class CommandsServiceProvider extends ServiceProvider
      | ------------------------------------------------------------------------------------------------
      */
     /**
-     * Register a command
+     * Register a command.
      *
      * @param  string   $name
      * @param  Closure  $callback
-     *
-     * @return self
      */
     private function registerCommand($name, Closure $callback)
     {
-        $name = self::COMMAND_KEY . '.' . $name;
-        $this->app->bind($name, $callback);
-        $this->commands[] = $name;
+        $command = $this->vendor . '.' . $this->package . '.commands.' . $name;
 
-        return $this;
+        $this->app->singleton($command, $callback);
+
+        $this->commands[] = $command;
+    }
+
+    /**
+     * Get the generator.
+     *
+     * @param  string  $name
+     *
+     * @return GeneratorInterface
+     */
+    private function getGenerator($name)
+    {
+        $generator = $this->vendor . '.' . $this->package . '.' . $name;
+
+        return $this->app[$generator];
     }
 }
